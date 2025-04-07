@@ -42,8 +42,8 @@ dependencies:
   flutter_dotenv: ^5.2.0 # Use the latest version
   pdf: ^3.10.4
   printing: ^5.11.0
-  htmltopdfwidgets: ^1.0.5
   markdown: ^7.3.0
+  htmltopdfwidgets: ^1.0.9
 
 dev_dependencies:
   flutter_test:

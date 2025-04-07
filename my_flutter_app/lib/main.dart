@@ -7,9 +7,9 @@ import 'package:flutter_markdown/flutter_markdown.dart'; // Keep for Markdown if
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'dart:typed_data';
-//import 'package:htmltopdfwidgets/htmltopdfwidgets.dart' as htmltopdfwidgets;
+import 'package:htmltopdfwidgets/htmltopdfwidgets.dart' as html2pdf;
 import 'package:flutter/services.dart' show rootBundle;
+import 'dart:typed_data';
 
 String GEMINI_API_KEY = "Insert your API key here";
 
@@ -55,26 +55,32 @@ class _MyHomePageState extends State<MyHomePage> {
   late final GenerativeModel _model;
 
   Future<void> _downloadAsPDF() async {
-    final pdf = pw.Document();
-    // Load the local font
-    final ByteData fontData = await rootBundle.load(
+    // Load fonts
+    final ByteData notoSansData = await rootBundle.load(
       'assets/fonts/NotoSans-Regular.ttf',
     );
-    final ttf = pw.Font.ttf(fontData);
+    final pw.Font notoSans = pw.Font.ttf(notoSansData);
 
-    // Split long markdown string into paragraphs
-    final lines = _tailoredResume.split('\n');
+    // Convert Markdown string to PDF widgets
+    final List<pw.Widget> markdownWidgets = await html2pdf.HTMLToPdf()
+        .convertMarkdown(_tailoredResume);
 
+    // Create a new PDF document
+    final pdf = pw.Document();
+
+    // Add content to the PDF with font and fallback
     pdf.addPage(
       pw.MultiPage(
-        theme: pw.ThemeData.withFont(base: ttf),
+        theme: pw.ThemeData.withFont(
+          base: notoSans,
+          fontFallback: [
+            notoSans,
+          ], // Fallback for unsupported characters like bullets
+        ),
         build:
             (pw.Context context) => [
               pw.Header(level: 0, child: pw.Text('Tailored Resume')),
-              pw.Paragraph(
-                text: lines.join('\n'),
-                style: pw.TextStyle(fontSize: 12),
-              ),
+              ...markdownWidgets,
             ],
       ),
     );
