@@ -77,11 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
             notoSans,
           ], // Fallback for unsupported characters like bullets
         ),
-        build:
-            (pw.Context context) => [
-              pw.Header(level: 0, child: pw.Text('Tailored Resume')),
-              ...markdownWidgets,
-            ],
+        build: (pw.Context context) => [...markdownWidgets],
       ),
     );
 
