@@ -235,6 +235,18 @@ class _MyHomePageState extends State<MyHomePage> {
         if (textChunk != null && mounted) {
           setState(() {
             _tailoredResume += textChunk; // Append text chunk
+            // Remove ```markdown at the start
+            if (_tailoredResume.startsWith('```markdown')) {
+              _tailoredResume =
+                  _tailoredResume.substring('```markdown'.length).trim();
+            }
+            // Remove ``` at the end if the length is greater than 20
+            if (_tailoredResume.length > 5 && _tailoredResume.endsWith('```')) {
+              _tailoredResume =
+                  _tailoredResume
+                      .substring(0, _tailoredResume.length - 3)
+                      .trim();
+            }
           });
 
           // Auto-scroll (simplified)
